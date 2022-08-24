@@ -5,6 +5,7 @@ import telebot
 import psycopg2
 import time
 import threading
+from datetime import datetime
 import secure
 from buttons import *
 from today_games import *
@@ -181,6 +182,11 @@ def info(message):
                               '"Отправка всех игр которые будут проходить в текущий день", в определенное время будет '
                               'приходить сообщение со списком всех матчей которые будут проходить в этот день.')
     main(chat_id)
+
+
+@bot.message_handler(['test'])
+def test_time(message):
+    bot.send_message(message.chat.id, str(datetime.now()))
 
 
 @bot.message_handler(content_types=['text'])

@@ -74,7 +74,7 @@ def single_team(chat_id):
     team = get_team(chat_id)
     if team:
         bot.send_message(chat_id, 'Подожди немного, сейчас матч найдется')
-        result = find(team, chat_id)
+        result = find(team)
         bot.send_message(chat_id, f'Твоя любимая команда {TEAM[team]}(можно поменять в настройках)')
         bot.send_message(chat_id, result, reply_markup=to_main)
     else:

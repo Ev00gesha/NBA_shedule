@@ -224,6 +224,6 @@ def callback_teams(call):
 
 
 if __name__ == '__main__':
-    thr = threading.Thread(target=timer, name='timer')
-    thr.start()
+    # thr = threading.Thread(target=timer, name='timer')
+    # thr.start()
     bot.polling(none_stop=True, interval=0)

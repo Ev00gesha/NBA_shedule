@@ -17,16 +17,17 @@ db_cur = db_con.cursor()
 
 def show_today_games():
     db_cur.execute('SELECT id_user FROM users WHERE show_today_games = TRUE')
-    users_send = db_cur.fetchall()[0]
-    result = find_today_games()
-    for user in users_send:
-        bot.send_message(user, 'Рассылка матчей которые пройдут в ближайшую ночь')
-        for game in result:
-            bot.send_message(user, game, reply_markup=to_main)
+    users_send = db_cur.fetchall()
+    if users_send:
+        result = find_today_games()
+        for user in users_send[0]:
+            bot.send_message(user, 'Рассылка матчей которые пройдут в ближайшую ночь')
+            for game in result:
+                bot.send_message(user, game, reply_markup=to_main)
 
 
 def timer():
-    schedule.every().day.at('19:00').do(show_today_games)
+    schedule.every().day.at('21:45').do(show_today_games)
     while True:
         schedule.run_pending()
 
@@ -70,6 +71,7 @@ def change_team(chat_id):
 def single_team(chat_id):
     team = get_team(chat_id)
     if team:
+        bot.send_message(chat_id, 'Подожди немного, сейчас матч найдется')
         result = find(team)
         bot.send_message(chat_id, f'Твоя любимая команда {TEAM[team]}(можно поменять в настройках)')
         bot.send_message(chat_id, result, reply_markup=to_main)
@@ -219,11 +221,12 @@ def callback_west(call):
 def callback_teams(call):
     chat_id = call.message.chat.id
     bot.delete_message(chat_id, call.message.message_id)
+    bot.send_message(chat_id, 'Подожди немного, сейчас матч найдется')
     game_info = find(call.data)
     bot.send_message(chat_id, game_info, reply_markup=to_main)
 
 
 if __name__ == '__main__':
-    # thr = threading.Thread(target=timer, name='timer')
-    # thr.start()
+    thr = threading.Thread(target=timer, name='timer')
+    thr.start()
     bot.polling(none_stop=True, interval=0)

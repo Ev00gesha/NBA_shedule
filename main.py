@@ -19,12 +19,13 @@ db_cur = db_con.cursor()
 def show_today_games():
     db_cur.execute('SELECT id_user FROM users WHERE show_today_games = TRUE')
     users_send = db_cur.fetchall()
-    if users_send:
-        result = find_today_games()
-        for user in users_send[0]:
-            bot.send_message(user, 'Рассылка матчей которые пройдут в ближайшую ночь')
-            for game in result:
-                bot.send_message(user, game, reply_markup=to_main)
+    bot.send_message(users_send[0][0], *users_send)
+    # if users_send:
+    #     result = find_today_games()
+    #     for user in users_send[0]:
+    #         bot.send_message(user, 'Рассылка матчей которые пройдут в ближайшую ночь')
+    #         for game in result:
+    #             bot.send_message(user, game, reply_markup=to_main)
 
 
 def timer():

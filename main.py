@@ -5,6 +5,7 @@ import telebot
 import psycopg2
 import time
 import threading
+import parse_config
 from datetime import datetime
 import secure
 from buttons import *
@@ -186,7 +187,7 @@ def info(message):
 
 @bot.message_handler(['test'])
 def test_time(message):
-    bot.send_message(message.chat.id, str(datetime.now()))
+    bot.send_message(message.chat.id, str(datetime.now()) + str(parse_config.time_now))
 
 
 @bot.message_handler(content_types=['text'])

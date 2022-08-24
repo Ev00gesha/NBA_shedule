@@ -27,7 +27,7 @@ def show_today_games():
 
 
 def timer():
-    schedule.every().day.at('21:45').do(show_today_games)
+    schedule.every().day.at('22:10').do(show_today_games)
     while True:
         schedule.run_pending()
 

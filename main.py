@@ -10,6 +10,7 @@ from buttons import *
 from today_games import *
 from find_game import *
 
+
 bot = telebot.TeleBot(os.getenv('TOKEN'))
 db_con = psycopg2.connect(os.getenv('DB'))
 db_cur = db_con.cursor()
@@ -72,9 +73,10 @@ def single_team(chat_id):
     team = get_team(chat_id)
     if team:
         bot.send_message(chat_id, 'Подожди немного, сейчас матч найдется')
-        result = find(team)
+        # result = find(team, chat_id)
         bot.send_message(chat_id, f'Твоя любимая команда {TEAM[team]}(можно поменять в настройках)')
-        bot.send_message(chat_id, result, reply_markup=to_main)
+        main(chat_id)
+        # bot.send_message(chat_id, result, reply_markup=to_main)
     else:
         bot.send_message(chat_id, 'Ты еще не выбрал любимую команду(\nНапиши мне одно из сокращений команд, которые '
                                   'ты видишь ниже')
@@ -222,8 +224,9 @@ def callback_teams(call):
     chat_id = call.message.chat.id
     bot.delete_message(chat_id, call.message.message_id)
     bot.send_message(chat_id, 'Подожди немного, сейчас матч найдется')
-    game_info = find(call.data)
-    bot.send_message(chat_id, game_info, reply_markup=to_main)
+    main(chat_id)
+    # game_info = find(call.data)
+    # bot.send_message(chat_id, game_info, reply_markup=to_main)
 
 
 if __name__ == '__main__':

@@ -5,8 +5,6 @@ import telebot
 import psycopg2
 import time
 import threading
-import parse_config
-from datetime import datetime
 import secure
 from buttons import *
 from today_games import *
@@ -21,13 +19,12 @@ db_cur = db_con.cursor()
 def show_today_games():
     db_cur.execute('SELECT id_user FROM users WHERE show_today_games = TRUE')
     users_send = db_cur.fetchall()
-    bot.send_message(users_send[0][0], *users_send)
-    # if users_send:
-    #     result = find_today_games()
-    #     for user in users_send[0]:
-    #         bot.send_message(user, 'Рассылка матчей которые пройдут в ближайшую ночь')
-    #         for game in result:
-    #             bot.send_message(user, game, reply_markup=to_main)
+    if users_send:
+        result = find_today_games()
+        for user in users_send[0]:
+            bot.send_message(user, 'Рассылка матчей которые пройдут в ближайшую ночь')
+            for game in result:
+                bot.send_message(user, game, reply_markup=to_main)
 
 
 def timer():
@@ -77,10 +74,9 @@ def single_team(chat_id):
     team = get_team(chat_id)
     if team:
         bot.send_message(chat_id, 'Подожди немного, сейчас матч найдется')
-        # result = find(team, chat_id)
+        result = find(team, chat_id)
         bot.send_message(chat_id, f'Твоя любимая команда {TEAM[team]}(можно поменять в настройках)')
-        main(chat_id)
-        # bot.send_message(chat_id, result, reply_markup=to_main)
+        bot.send_message(chat_id, result, reply_markup=to_main)
     else:
         bot.send_message(chat_id, 'Ты еще не выбрал любимую команду(\nНапиши мне одно из сокращений команд, которые '
                                   'ты видишь ниже')
@@ -185,11 +181,6 @@ def info(message):
     main(chat_id)
 
 
-@bot.message_handler(['test'])
-def test_time(message):
-    bot.send_message(message.chat.id, str(datetime.now()) + str(parse_config.time_now))
-
-
 @bot.message_handler(content_types=['text'])
 def navigator(message):
     chat_id = message.chat.id
@@ -233,9 +224,8 @@ def callback_teams(call):
     chat_id = call.message.chat.id
     bot.delete_message(chat_id, call.message.message_id)
     bot.send_message(chat_id, 'Подожди немного, сейчас матч найдется')
-    main(chat_id)
-    # game_info = find(call.data)
-    # bot.send_message(chat_id, game_info, reply_markup=to_main)
+    game_info = find(call.data)
+    bot.send_message(chat_id, game_info, reply_markup=to_main)
 
 
 if __name__ == '__main__':

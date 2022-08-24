@@ -25,11 +25,11 @@ def show_today_games():
             bot.send_message(user, 'Рассылка матчей которые пройдут в ближайшую ночь')
             for game in result:
                 bot.send_message(user, game, reply_markup=to_main)
+                time.sleep(1)
 
 
 def timer():
-    schedule.every(30).seconds.do(show_today_games)
-    # schedule.every().day.at('22:10').do(show_today_games)
+    schedule.every().day.at('19:00').do(show_today_games)
     while True:
         schedule.run_pending()
 
